@@ -31,20 +31,23 @@ function processFeatureServer (req, res, err, data, callback) {
   // check for info requests and respond like ArcGIS Server would
   if (req._parsedUrl.pathname.substr(-4) === 'info') return res.status(200).send(arcServerInfo)
 
+  // private function for handling data from featureServices methods
+  function _handleFeatureData (err, data) {
+    if (err) return res.status(400).send(err)
+
+    // limit response to 1000
+    if (data.features && data.features.length > 1000) {
+      data.features = data.features.splice(0, 1000)
+    }
+
+    if (callback) return res.send(callback + '(' + JSON.stringify(data) + ')')
+
+    res.json(data)
+  }
+
   if (featureServices[req.params.layer]) {
     // requests for specific layers - pass data and the query string
-    featureServices[req.params.layer](data, req.query || {}, function (err, d) {
-      if (err) return res.status(400).send(err)
-
-      // limit response to 1000
-      if (d.feature && d.features.length > 1000) {
-        d.features = d.features.splice(0, 1000)
-      }
-
-      if (callback) return res.send(callback + '(' + JSON.stringify(d) + ')')
-
-      res.json(d)
-    })
+    featureServices[req.params.layer](data, req.query || {}, _handleFeatureData)
   } else {
     // have a layer
     if (req.params.layer && data[req.params.layer]) {
@@ -56,18 +59,7 @@ function processFeatureServer (req, res, err, data, callback) {
 
     if (req.params.method && featureServices[req.params.method]) {
       // we have a method call like "/layers"
-      featureServices[req.params.method](data, req.query || {}, function (err, d) {
-        if (err) return res.status(400).send(err)
-
-        // limit response to 1000
-        if (d.features && d.features.length > 1000) {
-          d.features = d.features.splice(0, 1000)
-        }
-
-        if (callback) return res.send(callback + '(' + JSON.stringify(d) + ')')
-
-        res.json(d)
-      })
+      featureServices[req.params.method](data, req.query || {}, _handleFeatureData)
     } else {
       // make a straight up feature service info request
       // we still pass the layer here to conform to info method, though its undefined
