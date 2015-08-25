@@ -6,7 +6,7 @@ function noop () {}
 
 test('provider errors', function (t) {
   t.throws(Provider, /Missing options parameter/, 'throws error if no options')
-  t.throws(function () { new Provider({}) }, /Missing required option/, 'throws error if missing required option')
+  t.throws(function () { return new Provider({}) }, /Missing required option/, 'throws error if missing required option')
   t.end()
 })
 
