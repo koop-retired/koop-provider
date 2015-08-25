@@ -1,0 +1,44 @@
+{
+  "name": "koop-provider",
+  "description": "Koop provider creation toolkit",
+  "version": "1.0.0-alpha",
+  "author": "Nate Goldman <nate@ngoldman.me>",
+  "bugs": {
+    "url": "https://github.com/koopjs/koop-provider/issues"
+  },
+  "dependencies": {
+    "esri-extent": "^1.1.1",
+    "format-spatial-ref": "^1.0.0",
+    "lodash": "^3.10.0",
+    "sql-parser": "^0.5.0",
+    "terraformer": "^1.0.5",
+    "terraformer-arcgis-parser": "^1.0.4"
+  },
+  "devDependencies": {
+    "standard": "^5.1.0",
+    "tap-spec": "^4.0.2",
+    "tape": "^4.0.0"
+  },
+  "homepage": "https://github.com/koopjs/koop-provider",
+  "keywords": [
+    "controller",
+    "feature",
+    "helper",
+    "koop",
+    "model",
+    "prototype",
+    "provider",
+    "routes",
+    "service",
+    "utility"
+  ],
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koopjs/koop-provider.git"
+  },
+  "scripts": {
+    "test": "standard && tape test/*.js | tap-spec"
+  }
+}
