@@ -7,9 +7,8 @@
  * @param {object} options
  */
 function Provider (options) {
-  if (!(this instanceof Provider)) {
-    return new Provider(options)
-  }
+  if (!(this instanceof Provider)) return new Provider(options)
+  if (!options) throw new Error('Missing options parameter')
 
   var requiredOptions = ['name', 'version', 'model', 'controller', 'routes']
 
@@ -17,19 +16,32 @@ function Provider (options) {
     if (!options[option]) throw new Error('Missing required option: ' + option)
   })
 
-  // mandatory
+  /**
+   * mandatory settings
+   */
+
   this.type = 'provider'
 
-  // required
+  /**
+   * required settings
+   */
+
   this.name = options.name
   this.version = options.version
   this.model = options.model
   this.controller = options.controller
   this.routes = options.routes
 
-  // optional
+  /**
+   * optional settings
+   */
+
+  // always set hosts
   this.hosts = !!options.hosts
-  this.pattern = options.pattern || null
+
+  // only set pattern if it's there
+  // TODO: document or deprecate
+  if (options.pattern) this.pattern = options.pattern
 }
 
 module.exports = Provider
