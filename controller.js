@@ -12,14 +12,14 @@ var arcServerInfo = {
 }
 
 /**
- * shared logic for handling Feature Service requests
- * most providers will use this mehtod to figure out what request is being made
+ * Shared logic for handling Feature Service requests.
+ * Most providers will use this method to figure out what request is being made.
  *
- * @param {object} req
- * @param {object} res
- * @param {object} err
- * @param {object} data
- * @param {Function} callback
+ * @param {object} req - incoming server request
+ * @param {object} res - outgoing server response
+ * @param {object} err - a possible error for some reason
+ * @param {object} data - some data to process
+ * @param {string} callback - (?) possibly name of client-side callback function for jsonp
  */
 function processFeatureServer (req, res, err, data, callback) {
   // TODO: why are we doing this here
@@ -29,51 +29,53 @@ function processFeatureServer (req, res, err, data, callback) {
   if (!data) return res.status(400).send('Missing data')
 
   // check for info requests and respond like ArcGIS Server would
-  if (req._parsedUrl.pathname.substr(-4) === 'info') return res.status(200).send(arcServerInfo)
+  var isInfoRequest = req._parsedUrl.pathname.substr(-4) === 'info'
+  if (isInfoRequest) return res.status(200).send(arcServerInfo)
+
+  var layer = req.params.layer
+  var method = req.params.method
+  var query = req.query
+
+  // requests for specific layers - pass data and the query string
+  if (featureServices[layer]) {
+    return featureServices[layer](data, query || {}, _handleFeatureData)
+  }
+
+  if (layer) {
+    // pull out the layer data
+    if (data[layer]) data = data[layer]
+    else return res.status(404).send('Layer not found')
+  }
+
+  // we have a method call like "/layers"
+  if (method && featureServices[method]) {
+    return featureServices[method](data, query || {}, _handleFeatureData)
+  }
+
+  // make a straight up feature service info request
+  // we still pass the layer here to conform to info method, though it's undefined
+  featureServices.info(data, layer, query, function (err, responseData) {
+    if (err) {
+      if (callback) return callback(err)
+      return res.status(500).send(err)
+    }
+
+    if (callback) return res.send(callback + '(' + JSON.stringify(responseData) + ')')
+
+    res.json(responseData)
+  })
 
   // private function for handling data from featureServices methods
-  function _handleFeatureData (err, data) {
+  function _handleFeatureData (err, featureData) {
     if (err) return res.status(400).send(err)
 
     // limit response to 1000
-    if (data.features && data.features.length > 1000) {
-      data.features = data.features.splice(0, 1000)
-    }
+    var over1000 = featureData.features && featureData.features.length > 1000
+    if (over1000) featureData.features = featureData.features.splice(0, 1000)
 
-    if (callback) return res.send(callback + '(' + JSON.stringify(data) + ')')
+    if (callback) return res.send(callback + '(' + JSON.stringify(featureData) + ')')
 
-    res.json(data)
-  }
-
-  if (featureServices[req.params.layer]) {
-    // requests for specific layers - pass data and the query string
-    featureServices[req.params.layer](data, req.query || {}, _handleFeatureData)
-  } else {
-    // have a layer
-    if (req.params.layer && data[req.params.layer]) {
-      // pull out the layer data
-      data = data[req.params.layer]
-    } else if (req.params.layer && !data[req.params.layer]) {
-      return res.status(404).send('Layer not found')
-    }
-
-    if (req.params.method && featureServices[req.params.method]) {
-      // we have a method call like "/layers"
-      featureServices[req.params.method](data, req.query || {}, _handleFeatureData)
-    } else {
-      // make a straight up feature service info request
-      // we still pass the layer here to conform to info method, though its undefined
-      featureServices.info(data, req.params.layer, req.query, function (err, d) {
-        if (err) {
-          if (callback) return callback(err)
-          return res.status(500).send(err)
-        }
-
-        if (callback) return res.send(callback + '(' + JSON.stringify(d) + ')')
-
-        res.json(d)
-      })
-    }
+    res.json(featureData)
   }
 }
 
