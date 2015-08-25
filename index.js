@@ -1,3 +1,11 @@
+/**
+ * A provider constructor that validates options and enforces requirements.
+ * required: name, version, model, controller, routes
+ * optional: hosts, pattern
+ * @class
+ *
+ * @param {object} options
+ */
 function Provider (options) {
   if (!(this instanceof Provider)) {
     return new Provider(options)
