@@ -3,20 +3,25 @@ function Provider (options) {
     return new Provider(options)
   }
 
-  if (!options.name) throw new Error('missing name')
-  if (!options.model) throw new Error('missing model')
-  if (!options.controller) throw new Error('missing controller')
-  if (!options.routes) throw new Error('missing routes')
-  if (!options.version) throw new Error('missing version')
+  var requiredOptions = ['name', 'version', 'model', 'controller', 'routes']
 
+  requiredOptions.forEach(function (option) {
+    if (!options[option]) throw new Error('Missing required option: ' + option)
+  })
+
+  // mandatory
   this.type = 'provider'
+
+  // required
   this.name = options.name
-  this.hosts = !!options.hosts
-  this.pattern = options.pattern || null
+  this.version = options.version
   this.model = options.model
   this.controller = options.controller
   this.routes = options.routes
-  this.version = options.version
+
+  // optional
+  this.hosts = !!options.hosts
+  this.pattern = options.pattern || null
 }
 
 module.exports = Provider
