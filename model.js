@@ -28,6 +28,7 @@ function model (koop) {
 
   /**
    * returns configured data dir for the cache
+   *
    * @return {string}
    */
   function cacheDir () {
@@ -128,6 +129,15 @@ function model (koop) {
   }
 
   /**
+   * gets a plugin from the koop object
+   * @param {string} name - plugin name
+   * @return {function} plugin
+   */
+  function plugin (name) {
+    return koop[name]
+  }
+
+  /**
    * TODO: missing description
    *
    * @param {object} params
@@ -182,11 +192,13 @@ function model (koop) {
       var stream = fs.createReadStream(result.file)
 
       koop.files.write(result.paths.path + '/' + key, result.paths.newFile, stream, function (err) {
-        if (err) return callback(err, null)
+        if (err) return callback(err, result)
 
         if (!options.isFiltered) {
           koop.files.write(result.paths.latestPath, result.paths.newFile, fs.createReadStream(result.file), function (err) {
-            if (err) return callback(err, null)
+            if (err) {
+              koop.log.error('Error writing file to s3: %s', err)
+            }
 
             try {
               // try to clean up local FS
@@ -194,10 +206,11 @@ function model (koop) {
             } catch(e) {
               koop.log.debug('Trying to remove non-existant file: %s', e)
             }
+            sendFile(null, result)
           })
+        } else {
+          sendFile(null, result)
         }
-
-        sendFile(null, result)
       })
     } else {
       sendFile(null, result)
@@ -259,6 +272,7 @@ function model (koop) {
     finishExport: finishExport,
     parseSpatialReference: formatSpatialRef,
     tileGet: tileGet,
+    plugin: plugin,
     generateThumbnail: generateThumbnail,
     getImageServiceTile: getImageServiceTile,
     getServiceTile: getServiceTile,
