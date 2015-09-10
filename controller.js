@@ -21,11 +21,15 @@ var arcServerInfo = {
  * @param {object} data - some data to process
  */
 function processFeatureServer (req, res, err, data) {
+  // this is bad legacy code, leaving it here for now since it affects cache & query filtering
+  delete req.query.geometry
+
   if (err) return res.status(500).jsonp(err)
   if (!data) return res.status(400).jsonp(new Error('No data found'))
 
   // check for info requests and respond like ArcGIS Server would
-  if (req._parsedUrl.pathname.substr(-4) === 'info') return res.jsonp(arcServerInfo)
+  var isInfoRequest = req._parsedUrl.pathname.substr(-4) === 'info'
+  if (isInfoRequest) return res.jsonp(arcServerInfo)
 
   var layer = req.params.layer
   var method = req.params.method

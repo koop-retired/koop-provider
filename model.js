@@ -2,27 +2,27 @@ var fs = require('fs')
 var formatSpatialRef = require('format-spatial-ref')
 
 /**
- * exposes shared functionality across providers
- * typically things that require direct access to koop
- * TODO: refactor so that koop app isn't passed in at all
+ * Exposes shared functionality across providers.
+ * Typically this means things that require direct access to koop.
+ * TODO: Refactor so that koop app isn't passed in at all.
+ *       Properties currently needed from koop:
+ *       - log
+ *       - files
+ *       - Cache
+ *       - Exporter
+ *       - thumbnail
+ *       - tiles
  *
  * @param {Object} koop - instance of koop middleware app
  */
 function model (koop) {
   /**
-   * log to central Koop log
-   * configured at startup
-   *
-   * @param {string} level
-   * @param {string} message
+   * Expose central Koop log
    */
-  function log (level, message) {
-    koop.log[level](message)
-  }
+  var log = koop.log
 
   /**
-   * lookup files in the central Koop files object
-   * configured at startup
+   * Expose interface for file access (either local fs or s3)
    */
   var files = koop.files
 
