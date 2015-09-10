@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+### Changed
+* Updates from koop upstream in `controller`, `lib/feature-services`, `lib/query`
+
 ## [1.0.0-alpha.1]
 
 ### Changed
@@ -13,8 +18,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Provider constructor tests
 
 ### Fixed
-* Add missing model.plugin function
-* Revert model.finishExport to version in koop 2.7
+* Add missing `model.plugin` function
+* Revert `model.finishExport` to version in koop 2.7
 
 ## 1.0.0-alpha
 * alpha release

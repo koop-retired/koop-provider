@@ -17,65 +17,53 @@ var arcServerInfo = {
  *
  * @param {object} req - incoming server request
  * @param {object} res - outgoing server response
- * @param {object} err - a possible error for some reason
+ * @param {object} err - an error for some reason (this really shouldn't be here)
  * @param {object} data - some data to process
- * @param {string} callback - (?) possibly name of client-side callback function for jsonp
  */
-function processFeatureServer (req, res, err, data, callback) {
-  // TODO: why are we doing this here
-  delete req.query.geometry
-
-  if (err) return res.status(500).json(err)
-  if (!data) return res.status(400).send('Missing data')
+function processFeatureServer (req, res, err, data) {
+  if (err) return res.status(500).jsonp(err)
+  if (!data) return res.status(400).jsonp(new Error('No data found'))
 
   // check for info requests and respond like ArcGIS Server would
-  var isInfoRequest = req._parsedUrl.pathname.substr(-4) === 'info'
-  if (isInfoRequest) return res.status(200).send(arcServerInfo)
+  if (req._parsedUrl.pathname.substr(-4) === 'info') return res.jsonp(arcServerInfo)
 
   var layer = req.params.layer
   var method = req.params.method
-  var query = req.query
+  var query = req.query || {}
 
   // requests for specific layers - pass data and the query string
-  if (featureServices[layer]) {
-    return featureServices[layer](data, query || {}, _handleFeatureData)
-  }
+  if (featureServices[layer]) return featureServices[layer](data, query, _handleFeatureData)
 
   if (layer) {
-    // pull out the layer data
+    // pull out the layer data or return 404
     if (data[layer]) data = data[layer]
-    else return res.status(404).send('Layer not found')
+    else return res.status(404).jsonp(new Error('Layer not found'))
   }
 
   // we have a method call like "/layers"
-  if (method && featureServices[method]) {
-    return featureServices[method](data, query || {}, _handleFeatureData)
-  }
+  if (method && featureServices[method]) return featureServices[method](data, query, _handleFeatureData)
 
   // make a straight up feature service info request
   // we still pass the layer here to conform to info method, though it's undefined
-  featureServices.info(data, layer, query, function (err, responseData) {
-    if (err) {
-      if (callback) return callback(err)
-      return res.status(500).send(err)
-    }
-
-    if (callback) return res.send(callback + '(' + JSON.stringify(responseData) + ')')
-
-    res.json(responseData)
+  featureServices.info(data, layer, query, function (err, featureData) {
+    if (err) return res.status(500).jsonp(err)
+    res.jsonp(featureData)
   })
 
-  // private function for handling data from featureServices methods
+  /**
+   * private function for handling data from featureServices methods
+   *
+   * @param {Error} err - error
+   * @param {object} featureData - feature service data returned from featureServices method
+   */
   function _handleFeatureData (err, featureData) {
-    if (err) return res.status(400).send(err)
+    if (err) return res.status(400).jsonp(err)
 
     // limit response to 1000
     var over1000 = featureData.features && featureData.features.length > 1000
     if (over1000) featureData.features = featureData.features.splice(0, 1000)
 
-    if (callback) return res.send(callback + '(' + JSON.stringify(featureData) + ')')
-
-    res.json(featureData)
+    res.jsonp(featureData)
   }
 }
 
