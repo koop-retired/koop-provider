@@ -11,20 +11,21 @@ function Provider (options) {
   if (!options) throw new Error('Missing options parameter')
 
   var requiredOptions = ['name', 'version', 'model', 'controller', 'routes']
+  var missingOptions = []
 
   requiredOptions.forEach(function (option) {
-    if (!options[option]) throw new Error('Missing required option: ' + option)
+    if (!options[option]) missingOptions.push(options)
   })
 
-  /**
-   * mandatory settings
-   */
+  if (missingOptions.length) {
+    throw new Error('Missing required option(s): ' + missingOptions.join(', '))
+  }
+
+  // mandatory settings
 
   this.type = 'provider'
 
-  /**
-   * required settings
-   */
+  // required settings
 
   this.name = options.name
   this.version = options.version
@@ -32,9 +33,7 @@ function Provider (options) {
   this.controller = options.controller
   this.routes = options.routes
 
-  /**
-   * optional settings
-   */
+  // optional settings
 
   // always set hosts
   this.hosts = !!options.hosts

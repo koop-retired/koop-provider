@@ -17,15 +17,18 @@ var arcServerInfo = {
  *
  * @param {object} req - incoming server request
  * @param {object} res - outgoing server response
- * @param {object} err - an error for some reason (this really shouldn't be here)
  * @param {object} data - some data to process
  */
-function processFeatureServer (req, res, err, data) {
+function processFeatureServer (req, res, data) {
   // this is bad legacy code, leaving it here for now since it affects cache & query filtering
   delete req.query.geometry
 
-  if (err) return res.status(500).jsonp(err)
-  if (!data) return res.status(400).jsonp(new Error('No data found'))
+  if (!data) {
+    return res.status(400).jsonp({
+      code: 400,
+      message: 'No data found'
+    })
+  }
 
   // check for info requests and respond like ArcGIS Server would
   var isInfoRequest = req._parsedUrl.pathname.substr(-4) === 'info'
@@ -39,18 +42,31 @@ function processFeatureServer (req, res, err, data) {
   if (featureServices[layer]) return featureServices[layer](data, query, _handleFeatureData)
 
   if (layer) {
-    // pull out the layer data or return 404
-    if (data[layer]) data = data[layer]
-    else return res.status(404).jsonp(new Error('Layer not found'))
+    if (!data[layer]) {
+      return res.status(404).jsonp({
+        code: 404,
+        message: 'Layer not found'
+      })
+    }
+
+    data = data[layer]
   }
 
   // we have a method call like "/layers"
-  if (method && featureServices[method]) return featureServices[method](data, query, _handleFeatureData)
+  if (method && featureServices[method]) {
+    return featureServices[method](data, query, _handleFeatureData)
+  }
 
   // make a straight up feature service info request
   // we still pass the layer here to conform to info method, though it's undefined
   featureServices.info(data, layer, query, function (err, featureData) {
-    if (err) return res.status(500).jsonp(err)
+    if (err) {
+      return res.status(500).jsonp({
+        code: 500,
+        message: err.message
+      })
+    }
+
     res.jsonp(featureData)
   })
 
@@ -61,7 +77,12 @@ function processFeatureServer (req, res, err, data) {
    * @param {object} featureData - feature service data returned from featureServices method
    */
   function _handleFeatureData (err, featureData) {
-    if (err) return res.status(400).jsonp(err)
+    if (err) {
+      return res.status(400).jsonp({
+        code: 400,
+        message: err.message
+      })
+    }
 
     // limit response to 1000
     var over1000 = featureData.features && featureData.features.length > 1000
@@ -72,8 +93,8 @@ function processFeatureServer (req, res, err, data) {
 }
 
 /**
- * A base controller that can be used as a prototype
- * contains helper methods to process complex query structures for request routing
+ * A base controller that can be used as a prototype.
+ * Contains helper methods to process complex query structures for request routing.
  */
 function controller () {
   return {

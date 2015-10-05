@@ -16,14 +16,10 @@ var formatSpatialRef = require('format-spatial-ref')
  * @param {Object} koop - instance of koop middleware app
  */
 function model (koop) {
-  /**
-   * Expose central Koop log
-   */
+  // Expose central Koop log
   var log = koop.log
 
-  /**
-   * Expose interface for file access (either local fs or s3)
-   */
+  // Expose interface for file access (either local fs or s3)
   var files = koop.files
 
   /**
@@ -36,9 +32,8 @@ function model (koop) {
   }
 
   /**
-   * a wrapper method that reduces the number of params
-   * passed to exportFunctions
-   * Helps keep backward compatability with the existing API
+   * Wrapper method that reduces the number of params passed to export functions.
+   * Helps keep backward compatibility with the existing API.
    *
    * @param {object} params
    * @param {object} options
@@ -99,7 +94,7 @@ function model (koop) {
       return callback({
         code: 500,
         message: 'Thumbnail generation is not included in this instance of koop'
-      }, null)
+      })
     }
 
     options.dir = options.dir || koop.files.localDir
@@ -119,7 +114,7 @@ function model (koop) {
       return callback({
         code: 500,
         message: 'Tile generation is not included in this instance of koop'
-      }, null)
+      })
     }
 
     params.dir = params.dir || koop.files.localDir
@@ -175,8 +170,8 @@ function model (koop) {
           // try to clean up local FS
           fs.unlinkSync(result.paths.rootNewFile)
           fs.unlinkSync(result.paths.rootJsonFile)
-        } catch(e) {
-          koop.log.debug('Trying to remove non-existant file: %s', e)
+        } catch (e) {
+          koop.log.debug('Trying to remove non-existent file: %s', e)
         }
 
         koop.files.exists(result.paths.path + '/' + key, result.paths.newFile, function (exists, path) {
@@ -203,8 +198,8 @@ function model (koop) {
             try {
               // try to clean up local FS
               fs.unlinkSync(result.paths.rootNewFile)
-            } catch(e) {
-              koop.log.debug('Trying to remove non-existant file: %s', e)
+            } catch (e) {
+              koop.log.debug('Trying to remove non-existent file: %s', e)
             }
             sendFile(null, result)
           })

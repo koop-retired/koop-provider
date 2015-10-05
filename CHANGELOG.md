@@ -3,10 +3,23 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+### Changed
+* Now returning API error messages as `{ code: <number>, message: <string> }`
+
+### Removed
+* no more `err` parameter in `controller.processFeatureServer`
+  * errors should be handled before passing anything to this function
+
 ## [1.0.0-alpha.2] - 2015-09-11
 
 ### Changed
 * Updates from koop upstream in `controller`, `lib/feature-services`, `lib/query`
+
+### Removed
+* no more `callback` parameter in `controller.processFeatureServer`
+  * do not delete `req.query.callback` (this is used automatically by express's `res.jsonp` method)
 
 ## [1.0.0-alpha.1] - 2015-09-02
 
