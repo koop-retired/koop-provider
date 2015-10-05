@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+### Fixed
+* rewrapped model `*ServiceTile` methods
+
 ## [1.0.0-alpha.3] - 2015-10-05
 
 ### Changed
