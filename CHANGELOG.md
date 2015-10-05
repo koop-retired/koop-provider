@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 ### Changed
-* Now returning API error messages as `{ code: <number>, message: <string> }`
+* Now returning API error messages as `{ error: { code: <number>, message: <string> } }`
 
 ### Removed
 * no more `err` parameter in `controller.processFeatureServer`

@@ -25,8 +25,10 @@ function processFeatureServer (req, res, data) {
 
   if (!data) {
     return res.status(400).jsonp({
-      code: 400,
-      message: 'No data found'
+      error: {
+        code: 400,
+        message: 'No data found'
+      }
     })
   }
 
@@ -44,8 +46,10 @@ function processFeatureServer (req, res, data) {
   if (layer) {
     if (!data[layer]) {
       return res.status(404).jsonp({
-        code: 404,
-        message: 'Layer not found'
+        error: {
+          code: 404,
+          message: 'Layer not found'
+        }
       })
     }
 
@@ -62,8 +66,10 @@ function processFeatureServer (req, res, data) {
   featureServices.info(data, layer, query, function (err, featureData) {
     if (err) {
       return res.status(500).jsonp({
-        code: 500,
-        message: err.message
+        error: {
+          code: 500,
+          message: err.message
+        }
       })
     }
 
@@ -79,8 +85,10 @@ function processFeatureServer (req, res, data) {
   function _handleFeatureData (err, featureData) {
     if (err) {
       return res.status(400).jsonp({
-        code: 400,
-        message: err.message
+        error: {
+          code: 400,
+          message: err.message
+        }
       })
     }
 

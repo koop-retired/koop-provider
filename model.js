@@ -146,6 +146,7 @@ function model (koop) {
    * TODO: missing description
    *
    * @param {object} params
+   * @param {object} info
    * @param {Function} callback
    */
   function getServiceTile (params, info, callback) {
