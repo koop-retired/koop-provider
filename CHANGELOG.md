@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 * Now returning API error messages as `{ error: { code: <number>, message: <string> } }`
+* `provider.createController()` renamed to `provider.controller()`
+* `provider.createModel()` renamed to `provider.model()`
+* `fieldType()` broken out of `feature-services.js` and `query.js` into `field-type.js`
 
 ### Removed
 * no more `err` parameter in `controller.processFeatureServer`
