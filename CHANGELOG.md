@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## [1.0.0-alpha.3] - 2015-10-05
 
 ### Changed
 * Now returning API error messages as `{ error: { code: <number>, message: <string> } }`
@@ -41,5 +41,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * alpha release
 
 
+[1.0.0-alpha.3]: https://github.com/koopjs/koop-provider/compare/v1.0.0-alpha.1...v1.0.0-alpha.3
 [1.0.0-alpha.2]: https://github.com/koopjs/koop-provider/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
 [1.0.0-alpha.1]: https://github.com/koopjs/koop-provider/compare/v1.0.0-alpha...v1.0.0-alpha.1
