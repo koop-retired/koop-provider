@@ -1,5 +1,5 @@
 var test = require('tape')
-var query = require('../lib/query')
+var query = require('../lib/feature-services/query')
 var fixture1 = require('./fixtures/snow1.geojson')
 var fixture2 = require('./fixtures/snow2.geojson')
 var fixture3 = require('./fixtures/snow3.geojson')

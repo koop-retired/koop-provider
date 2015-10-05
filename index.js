@@ -44,5 +44,5 @@ function Provider (options) {
 }
 
 module.exports = Provider
-module.exports.createModel = require('./model')
-module.exports.createController = require('./controller')
+module.exports.model = require('./lib/model')
+module.exports.controller = require('./lib/controller')
