@@ -25,7 +25,7 @@ function model (koop) {
   /**
    * returns configured data dir for the cache
    *
-   * @return {string}
+   * @return {string} data directory
    */
   function cacheDir () {
     return koop.Cache.data_dir
@@ -78,6 +78,7 @@ function model (koop) {
    */
   function exportLarge (format, id, key, type, options, callback) {
     options.rootDir = koop.files.localDir
+
     koop.Exporter.exportLarge(koop, format, id, key, type, options, finishExport, callback)
   }
 
@@ -91,10 +92,7 @@ function model (koop) {
    */
   function generateThumbnail (data, key, options, callback) {
     if (!koop.thumbnail) {
-      return callback({
-        code: 500,
-        message: 'Thumbnail generation is not included in this instance of koop'
-      })
+      return callback(new Error('Thumbnail generation is not included in this instance of koop'))
     }
 
     options.dir = options.dir || koop.files.localDir
@@ -111,10 +109,7 @@ function model (koop) {
    */
   function tileGet (params, data, callback) {
     if (!koop.tiles) {
-      return callback({
-        code: 500,
-        message: 'Tile generation is not included in this instance of koop'
-      })
+      return callback(new Error('Tile generation is not included in this instance of koop'))
     }
 
     params.dir = params.dir || koop.files.localDir
@@ -130,27 +125,6 @@ function model (koop) {
    */
   function plugin (name) {
     return koop[name]
-  }
-
-  /**
-   * TODO: missing description
-   *
-   * @param {object} params
-   * @param {Function} callback
-   */
-  function getImageServiceTile (params, callback) {
-    koop.tiles.getImageServiceTile(params, callback)
-  }
-
-  /**
-   * TODO: missing description
-   *
-   * @param {object} params
-   * @param {object} info
-   * @param {Function} callback
-   */
-  function getServiceTile (params, info, callback) {
-    koop.tiles.getServiceTile(params, info, callback)
   }
 
   /**
@@ -236,28 +210,6 @@ function model (koop) {
     })
   }
 
-  /**
-   * TODO: missing description
-   *
-   * @param {string} key
-   * @param {options} options
-   * @param {Function} callback
-   */
-  function getCount (key, options, callback) {
-    koop.Cache.getCount(key, options, callback)
-  }
-
-  /**
-   * TODO: missing description
-   *
-   * @param {string} key
-   * @param {options} options
-   * @param {Function} callback
-   */
-  function getExtent (key, options, callback) {
-    koop.Cache.getExtent(key, options, callback)
-  }
-
   return {
     log: log,
     files: files,
@@ -270,12 +222,12 @@ function model (koop) {
     tileGet: tileGet,
     plugin: plugin,
     generateThumbnail: generateThumbnail,
-    getImageServiceTile: getImageServiceTile,
-    getServiceTile: getServiceTile,
+    getImageServiceTile: koop.tiles.getImageServiceTile,
+    getServiceTile: koop.tiles.getServiceTile,
     getGeoHash: getGeoHash,
     saveFile: saveFile,
-    getCount: getCount,
-    getExtent: getExtent
+    getCount: koop.Cache.getCount,
+    getExtent: koop.Cache.getExtent
   }
 }
 
