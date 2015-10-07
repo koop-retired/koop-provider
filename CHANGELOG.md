@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+### Added
+
+* controller: added `errorResponse` for standardizing API error responses
+
 ## [1.0.0-alpha.4] - 2015-10-05
 
 ### Fixed
