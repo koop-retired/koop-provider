@@ -1,6 +1,6 @@
 # koop-provider
 
-> Koop provider creation toolkit
+> Koop provider toolkit
 
 [![npm][npm-image]][npm-url]
 [![travis][travis-image]][travis-url]

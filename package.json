@@ -1,6 +1,6 @@
 {
   "name": "koop-provider",
-  "description": "Koop provider creation toolkit",
+  "description": "Koop provider toolkit",
   "version": "1.0.0-beta",
   "author": "Nate Goldman <nate@ngoldman.me>",
   "bugs": {
