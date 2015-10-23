@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.0] - 2015-10-23
+
+Stable Release!
+
+### Added
+
+* documentation
+
 ## [1.0.0-beta] - 2015-10-07
 
 ### Added
@@ -52,6 +60,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * alpha release
 
 
+[1.0.0]: https://github.com/koopjs/koop-provider/compare/v1.0.0-beta...v1.0.0
 [1.0.0-beta]: https://github.com/koopjs/koop-provider/compare/v1.0.0-alpha.4...v1.0.0-beta
 [1.0.0-alpha.4]: https://github.com/koopjs/koop-provider/compare/v1.0.0-alpha.3...v1.0.0-alpha.4
 [1.0.0-alpha.3]: https://github.com/koopjs/koop-provider/compare/v1.0.0-alpha.2...v1.0.0-alpha.3
